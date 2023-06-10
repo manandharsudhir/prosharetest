@@ -80,23 +80,23 @@ class NetworkExceptions with _$NetworkExceptions {
       [@Default('Too many request') String errorMessage]) = _TooManyRequest;
 }
 
-extension DioToNetworkException on DioError {
+extension DioToNetworkException on DioException {
   NetworkExceptions toNetworkException() {
     NetworkExceptions networkExceptions;
     switch (type) {
-      case DioErrorType.cancel:
+      case DioExceptionType.cancel:
         networkExceptions = const NetworkExceptions.requestCancelled();
         break;
-      case DioErrorType.connectTimeout:
+      case DioExceptionType.connectionTimeout:
         networkExceptions = const NetworkExceptions.connectionTimeout();
         break;
-      case DioErrorType.sendTimeout:
+      case DioExceptionType.sendTimeout:
         networkExceptions = const NetworkExceptions.sendTimeout();
         break;
-      case DioErrorType.receiveTimeout:
+      case DioExceptionType.receiveTimeout:
         networkExceptions = const NetworkExceptions.receiveTimeout();
         break;
-      case DioErrorType.response:
+      case DioExceptionType.badResponse:
         // we get some response from server so needed to use response here.
         final String? errorMessage =
             (response!.data is List) || (response!.data is Map)
@@ -168,7 +168,7 @@ extension DioToNetworkException on DioError {
             );
         }
         break;
-      case DioErrorType.other:
+      case DioExceptionType.unknown:
         // we got some other kind of errors like socket exception or
         // network exception etc
         if (error is SocketException) {
